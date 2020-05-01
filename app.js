@@ -14,8 +14,8 @@ const startGame = (e) => {
         mainBoard.classList.remove('innactive');
         startPage.classList.add('innactive');
         playerName.innerHTML = input.value
-
     }
+    getCards()
 }
 const removeClassesStartButton = () => {
     input.placeholder = "username"
@@ -40,8 +40,18 @@ input.addEventListener('keyup', () => {
 })
 input.addEventListener('mouseenter', removeClassesStartButton)
 
-const packsOfCards = ['2C', '2D', '2H', '2S', '3C', '3D', '3H', '3S', '4C', '4D', '4H', '4S', '5C', '5D', '5H', '5S', '6C', '6D', '6H', '6S', '7C', '7D', '7H', '7S', '8C', '8D', '8H', '8S', '9C', '9D', '9H', '9S', '10C', '10D', '10H', '10S', 'JC', 'JD', 'JH', 'JS', 'QC', 'QD', 'QH', 'QS', 'KC', 'KD', 'KH', 'KS', 'AC', 'AD', 'AH', 'AS']
 
+const backOfCards = ['blue_back', 'Red_back'];
+const packsOfCards = [];
+const getCards = () => {
+    const cardsValues = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'K', 'Q'];
+    const suits = ['C', 'D', 'H', 'S'];
+    for (let i = 0; i < cardsValues.length; i++) {
+        for (let j = 0; j < suits.length; j++) {
+            packsOfCards.push(cardsValues[i] + suits[j])
+        }
+    }
+}
 
 
 const playerCardsBoard = document.querySelector('.player-cards')
@@ -51,15 +61,12 @@ const pointsComputer = document.querySelector('.croupier-points')
 const standButton = document.querySelector('.stand')
 const hitButton = document.querySelector('.hit');
 
-
-
-const backOfCards = ['blue_back', 'Red_back'];
-
 let cardIndex;
+let playerTotalPoints;
+let computerTotalPoints;
 
 const drawCard = () => {
     cardIndex = Math.floor(Math.random() * packsOfCards.length)
-    drawingCard = packsOfCards[cardIndex];
 }
 const playerCards = [];
 
@@ -71,98 +78,9 @@ const playerCard = () => {
     playerNewCard.style.backgroundImage = `url(Images/Cards/${packsOfCards[cardIndex]}.jpg)`
     playerCardsBoard.appendChild(playerNewCard);
     packsOfCards.splice(cardIndex, 1)
-    playerPoints()
-    pointsPlayer.innerText = playerTotalPoints;
+    pointsCounter(playerCards, pointsPlayer)
 }
 
-let playerTotalPoints;
-
-const playerPoints = () => {
-    playerTotalPoints = 0;
-    for (let i = 0; i < playerCards.length; i++) {
-        switch (playerCards[i]) {
-            case "2C":
-            case "2D":
-            case "2H":
-            case "2S":
-                point = 2;
-                break;
-            case "3C":
-            case "3D":
-            case "3H":
-            case "3S":
-                point = 3;
-                break;
-            case "4C":
-            case "4D":
-            case "4H":
-            case "4S":
-                point = 4;
-                break;
-            case "5C":
-            case "5D":
-            case "5H":
-            case "5S":
-                point = 5;
-                break;
-            case "6C":
-            case "6D":
-            case "6H":
-            case "6S":
-                point = 6;
-                break;
-            case "7C":
-            case "7D":
-            case "7H":
-            case "7S":
-                point = 7;
-                break;
-            case "8C":
-            case "8D":
-            case "8H":
-            case "8S":
-                point = 8;
-                break;
-            case "9C":
-            case "9D":
-            case "9H":
-            case "9S":
-                point = 9;
-                break;
-            case "10C":
-            case "10D":
-            case "10H":
-            case "10S":
-                point = 10;
-                break;
-            case "JC":
-            case "JD":
-            case "JH":
-            case "JS":
-                point = 10;
-                break;
-            case "QC":
-            case "QD":
-            case "QH":
-            case "QS":
-                point = 10;
-                break;
-            case "KC":
-            case "KD":
-            case "KH":
-            case "KS":
-                point = 10;
-                break;
-            case "AC":
-            case "AD":
-            case "AH":
-            case "AS":
-                point = 10;
-                break;
-        }
-        playerTotalPoints += point;
-    }
-}
 let flag = false;
 const computerCards = [];
 
@@ -172,112 +90,67 @@ const computerCard = () => {
     const computerNewCard = document.createElement('div');
     computerNewCard.className = "card";
     computerCardsBoard.appendChild(computerNewCard);
-    computerPoints()
+    pointsCounter(computerCards, pointsComputer)
     computerNewCard.style.backgroundImage = `url(Images/Cards/${packsOfCards[cardIndex]}.jpg)`
     packsOfCards.splice(cardIndex, 1)
     if (flag === false && computerCards.length === 2) {
         computerCardsBoard.lastChild.style.backgroundImage = `url(Images/Cards/Red_back.jpg)`
     }
-
-
 }
 
+const pointsCounter = (cards, textPoints) => {
+    let totalPoints = 0;
 
-
-
-let computerTotalPoints;
-
-const computerPoints = () => {
-    computerTotalPoints = 0;
-
-    for (let i = 0; !flag ? i < computerCards.length - 1 : i < computerCards.length; i++) {
-        switch (computerCards[i]) {
-            case "2C":
-            case "2D":
-            case "2H":
-            case "2S":
+    for (let i = 0; cards === playerCards ? i < cards.length : !flag ? (i < cards.length - 1) : (i < cards.length); i++) {
+        switch (true) {
+            case cards[i].includes('2'):
                 point = 2;
                 break;
-            case "3C":
-            case "3D":
-            case "3H":
-            case "3S":
+            case cards[i].includes('3'):
                 point = 3;
                 break;
-            case "4C":
-            case "4D":
-            case "4H":
-            case "4S":
+            case cards[i].includes('4'):
                 point = 4;
                 break;
-            case "5C":
-            case "5D":
-            case "5H":
-            case "5S":
+            case cards[i].includes('5'):
                 point = 5;
                 break;
-            case "6C":
-            case "6D":
-            case "6H":
-            case "6S":
+            case cards[i].includes('6'):
                 point = 6;
                 break;
-            case "7C":
-            case "7D":
-            case "7H":
-            case "7S":
+            case cards[i].includes('7'):
                 point = 7;
                 break;
-            case "8C":
-            case "8D":
-            case "8H":
-            case "8S":
+            case cards[i].includes('8'):
                 point = 8;
                 break;
-            case "9C":
-            case "9D":
-            case "9H":
-            case "9S":
+            case cards[i].includes('9'):
                 point = 9;
                 break;
-            case "10C":
-            case "10D":
-            case "10H":
-            case "10S":
+            case cards[i].includes('10'):
+            case cards[i].includes('J'):
+            case cards[i].includes('Q'):
+            case cards[i].includes('K'):
                 point = 10;
                 break;
-            case "JC":
-            case "JD":
-            case "JH":
-            case "JS":
-                point = 10;
-                break;
-            case "QC":
-            case "QD":
-            case "QH":
-            case "QS":
-                point = 10;
-                break;
-            case "KC":
-            case "KD":
-            case "KH":
-            case "KS":
-                point = 10;
-                break;
-            case "AC":
-            case "AD":
-            case "AH":
-            case "AS":
-                point = 10;
+            case cards[i].includes('A'):
+                point = 11;
                 break;
         }
+        totalPoints += point;
+        textPoints.innerText = totalPoints;
 
-
-        computerTotalPoints += point;
-        pointsComputer.innerText = computerTotalPoints;
+    }
+    if (cards === playerCards) {
+        playerTotalPoints = totalPoints;
+    } else if (cards == computerCards) {
+        computerTotalPoints = totalPoints;
     }
 }
 
+const checkAce = () => {
+
+}
 const inputSetStake = document.querySelector('.set-stake');
 const setStakeButton = document.querySelector('.setStakeButton');
 const setStakeInfo = document.querySelector('.set-stake-info');
@@ -314,6 +187,7 @@ const playGame = () => {
         balance -= stake;
         changeBalance()
         stakeFlag = true;
+        setTimeout(checkGameResults, 1500)
 
     }
 
@@ -335,14 +209,14 @@ const changeBalance = () => {
 }
 
 const standGame = () => {
-    if (stakeFlag === true) {
+    if (stakeFlag) {
         flag = true;
         computerCardsBoard.lastChild.style.backgroundImage = `url(Images/Cards/${computerCards[1]}.jpg)`
-        computerPoints()
+        pointsCounter(computerCards, pointsComputer)
 
         const addComputerCard = () => {
             setTimeout(computerCard, 500)
-            computerPoints()
+            pointsCounter(computerCards, pointsComputer)
         }
 
         const checkComputerPoints = () => {
@@ -366,11 +240,11 @@ let doubleFlag = false;
 
 const hitGame = () => {
 
-    if ((doubleFlag === true && playerCards.length < 3) || (stakeInfo.innerText !== "" && playerTotalPoints < 21 && flag === false && doubleFlag === false)) {
+    if ((doubleFlag && playerCards.length < 3) || (stakeInfo.innerText !== "" && playerTotalPoints < 21 && !flag && !doubleFlag)) {
         playerCard()
         setTimeout(checkGameResults, 1500)
         hitFlag = true;
-        if (doubleFlag === true && playerTotalPoints <= 21) {
+        if (doubleFlag && playerTotalPoints <= 21) {
             setTimeout(standGame, 1500)
         }
     }
@@ -388,37 +262,34 @@ const showResult = document.querySelector('.show-result')
 const showResultText = document.querySelector('.last-game-result')
 
 const checkGameResults = () => {
-    if (playerTotalPoints === 21 && flag === false) {
-        // ++won
-        // wonInfo.innerText = won;
-        showResultText.innerText = "You won"
+
+    const results = (result) => {
+        showResultText.innerText = result;
         showResult.classList.remove('innactive')
+    }
+    if (playerTotalPoints === 21 && !flag && !doubleFlag && (!hitFlag || playerCards.length > 2)) {
+        results("You won")
         wonMoney(1.5)
-    } else if (playerTotalPoints > 21 && flag === false) {
-        showResultText.innerText = "You lost"
-        showResult.classList.remove('innactive')
-    } else if (computerTotalPoints > 21 && flag === true) {
-        showResultText.innerText = "You won"
-        showResult.classList.remove('innactive')
+    } else if (playerTotalPoints > 21 && !flag) {
+        results("You lost")
+    } else if (computerTotalPoints > 21 && flag) {
+        results("You won")
         wonMoney(2)
-    } else if (computerTotalPoints === 21 && flag === true) {
-        showResultText.innerText = "You lost"
-        showResult.classList.remove('innactive')
-    } else if (computerTotalPoints < 21 && flag === true) {
-        if (playerTotalPoints > computerTotalPoints && flag === true) {
-            showResultText.innerText = "You won"
-            showResult.classList.remove('innactive')
+    } else if (computerTotalPoints === 21 && flag) {
+        results("You lost")
+    } else if (computerTotalPoints < 21 && flag) {
+        if (playerTotalPoints > computerTotalPoints) {
+            results("You won")
             wonMoney(2)
-        } else if (playerTotalPoints === computerTotalPoints && flag === true) {
-            showResultText.innerText = "Draw"
-            showResult.classList.remove('innactive')
-        } else if (playerTotalPoints < computerTotalPoints && flag === true) {
-            showResultText.innerText = "You lost"
-            showResult.classList.remove('innactive')
+        } else if (playerTotalPoints === computerTotalPoints) {
+            results("Draw")
+            wonMoney(1)
+        } else if (playerTotalPoints < computerTotalPoints) {
+            results("You lost")
+
         }
     }
 }
-
 
 const newGameButton = document.querySelector('.new-game')
 
@@ -432,11 +303,7 @@ const startAnotherGame = () => {
     computerCards.splice(0, computerCards.length);
     playerCards.splice(0, playerCards.length);
     packsOfCards.splice(0, packsOfCards.length)
-    packsOfCards.push('2C', '2D', '2H', '2S', '3C', '3D', '3H', '3S', '4C', '4D', '4H', '4S', '5C', '5D', '5H', '5S', '6C', '6D', '6H', '6S', '7C', '7D', '7H', '7S', '8C', '8D', '8H', '8S', '9C', '9D', '9H', '9S', '10C', '10D', '10H', '10S', 'JC', 'JD', 'JH', 'JS', 'QC', 'QD', 'QH', 'QS', 'KC', 'KD', 'KH', 'KS', 'AC', 'AD', 'AH', 'AS')
-
-    // for (let i = 0; i < playerCardsBoard.childNodes.length; i++) {
-    //     playerCardsBoard.childNodes[i].remove()
-    // }
+    getCards();
 
     document.querySelectorAll('.croupier-cards div').forEach(div => div.parentNode.removeChild(div));
 
@@ -499,5 +366,3 @@ const wonMoney = (multiplier) => {
 doubleButton.addEventListener('click', doubleStake, {
     once: true
 })
-
-//jak trafię 21 po double i hit to od razu wygrywam, komputer nie sprawdza kart
